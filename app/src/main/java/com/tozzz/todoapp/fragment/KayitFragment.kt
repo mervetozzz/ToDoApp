@@ -7,11 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import com.tozzz.todoapp.R
 import com.tozzz.todoapp.databinding.FragmentKayitBinding
+import com.tozzz.todoapp.viewmodel.GorevKayitVMF
+import com.tozzz.todoapp.viewmodel.KayitFragmentViewModel
 
 class KayitFragment : Fragment() {
     private lateinit var tasarim : FragmentKayitBinding
+    private lateinit var viewModel :KayitFragmentViewModel
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         tasarim = DataBindingUtil.inflate(inflater,R.layout.fragment_kayit, container, false)
         tasarim.kayitFragment = this
@@ -19,8 +24,16 @@ class KayitFragment : Fragment() {
         return tasarim.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val tempViewModel: KayitFragmentViewModel by viewModels(){
+            GorevKayitVMF(requireActivity().application)
+        }
+        viewModel = tempViewModel
+    }
+
     fun buttonKaydetTikla(is_adi : String){
-        Log.e("İş", "$is_adi")
+        viewModel.kayit(is_adi)
     }
 
 }

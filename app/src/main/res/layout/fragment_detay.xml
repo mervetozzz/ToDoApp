@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable name="detayToolbarBaslik" type="String" />
+        <variable name="yapilacakIsNesnesi" type="com.tozzz.todoapp.entity.Yapilacaklar" />
+        <variable name="detayFragment" type="com.tozzz.todoapp.fragment.DetayFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,6 +16,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbarDetay"
+            app:title="@{detayToolbarBaslik}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
@@ -38,6 +41,7 @@
                 android:id="@+id/etGuncelle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@{yapilacakIsNesnesi.yapilacak_is}"
                 android:hint="Yapılacak İş" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -46,8 +50,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="100dp"
             android:layout_marginEnd="32dp"
+            android:onClick="@{() -> detayFragment.buttonguncelle(yapilacakIsNesnesi.is_id,etGuncelle.getText().toString())}"
             android:text="Güncelle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

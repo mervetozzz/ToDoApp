@@ -1,6 +1,13 @@
 package com.tozzz.todoapp.entity
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import org.jetbrains.annotations.NotNull
 import java.io.Serializable
 
-data class Yapilacaklar (var is_id:Int, var yapilacak_is : String) : Serializable{
+@Entity(tableName = "yapilacaklar")
+data class Yapilacaklar (@PrimaryKey(autoGenerate = true)
+                         @ColumnInfo(name = "is_id") @NotNull var is_id:Int,
+                         @ColumnInfo(name = "yapilacak_is") @NotNull var yapilacak_is : String) : Serializable{
 }

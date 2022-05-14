@@ -7,45 +7,47 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tozzz.todoapp.R
 import com.tozzz.todoapp.adapter.YapilacaklarAdapter
 import com.tozzz.todoapp.databinding.FragmentAnasayfaBinding
 import com.tozzz.todoapp.entity.Yapilacaklar
+import com.tozzz.todoapp.viewmodel.AnasayfaFragmentViewModel
+import com.tozzz.todoapp.viewmodel.GorevAnasayfaVMF
 
 class AnasayfaFragment : Fragment(),SearchView.OnQueryTextListener {
     private lateinit var tasarim : FragmentAnasayfaBinding
+    private lateinit var viewModel: AnasayfaFragmentViewModel
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        tasarim = FragmentAnasayfaBinding.inflate(inflater, container, false)
-        tasarim.toolbarAnasayfa.title = "Yapılacaklar Listesi"
+        tasarim = DataBindingUtil.inflate(inflater,R.layout.fragment_anasayfa, container, false)
+        tasarim.anasayfaFragment = this
+
+        tasarim.anasayfaToolbarBaslik = "Yapılacaklar Listesi"
         (activity as AppCompatActivity).setSupportActionBar(tasarim.toolbarAnasayfa)
 
-        tasarim.rv.layoutManager = LinearLayoutManager(requireContext())
-
-        val yapilacaklarListesi = ArrayList<Yapilacaklar>()
-        val i1 = Yapilacaklar(1,"Ekmek Al")
-        val i2 = Yapilacaklar(2,"kahvaltı")
-        val i3 = Yapilacaklar(3,"spor")
-        val i4 = Yapilacaklar(4,"Kotlin")
-
-        yapilacaklarListesi.add(i1)
-        yapilacaklarListesi.add(i2)
-        yapilacaklarListesi.add(i3)
-        yapilacaklarListesi.add(i4)
-
-        val adapter = YapilacaklarAdapter(requireContext(),yapilacaklarListesi)
-        tasarim.rv.adapter = adapter
-
-        tasarim.fabEkle.setOnClickListener{
-            Navigation.findNavController(it).navigate(R.id.kayıtGecis)
+        viewModel.yapilacaklarListesi.observe(viewLifecycleOwner){
+            val adapter = YapilacaklarAdapter(requireContext(),it,viewModel)
+            tasarim.yapilacaklarAdapter = adapter
         }
+
         return tasarim.root
+    }
+
+    fun fabTikla(v:View){
+        Navigation.findNavController(v).navigate(R.id.kayıtGecis)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        val tempViewModel : AnasayfaFragmentViewModel by viewModels(){
+            GorevAnasayfaVMF(requireActivity().application)
+        }
+        viewModel = tempViewModel
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -57,17 +59,18 @@ class AnasayfaFragment : Fragment(),SearchView.OnQueryTextListener {
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {
-        ara(query)
+        viewModel.ara(query)
         return true
     }
 
     override fun onQueryTextChange(newText: String): Boolean {
-        ara(newText)
+        viewModel.ara(newText)
         return true
     }
 
-    fun ara(aramaKelimesi:String){
-        Log.e("İş Ara",aramaKelimesi)
+    override fun onResume() {
+        super.onResume()
+        viewModel.gorevleriYukle()
     }
 
 
